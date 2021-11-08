@@ -287,19 +287,27 @@ namespace dvxplorer_ros_driver {
     boost::posix_time::ptime next_send_time = boost::posix_time::microsec_clock::local_time();
 
     dvs_msgs::EventArrayPtr event_array_msg;
-
+    libcaer::filters::DVSNoise filter(dvxplorer_info_.dvsSizeX, dvxplorer_info_.dvsSizeY);
+    filter.configSet(CAER_FILTER_DVS_HOTPIXEL_LEARN, true);
+        filter.configSet(CAER_FILTER_DVS_HOTPIXEL_TIME, 1000000);
+        filter.configSet(CAER_FILTER_DVS_HOTPIXEL_COUNT, 1000);
     while (running_) {
         try {
           caerEventPacketContainer packetContainer = caerDeviceDataGet(dvxplorer_handle_);
-          libcaer::filters::DVSNoise filter(dvxplorer_info_.dvsSizeX, dvxplorer_info_.dvsSizeY);
+
           if (bkg_filter_enabled_){
               filter.configSet(CAER_FILTER_DVS_BACKGROUND_ACTIVITY_ENABLE, true);
               //			filter.configSet(CAER_FILTER_DVS_BACKGROUND_ACTIVITY_TIME, 1000000);
             }
-          if(hotpixel_filter_enabled_) {
-              filter.configSet(CAER_FILTER_DVS_HOTPIXEL_LEARN, true);
-              //			  filter.configSet(CAER_FILTER_DVS_HOTPIXEL_TIME, 1000000);
-              //			  filter.configSet(CAER_FILTER_DVS_HOTPIXEL_COUNT, 1000);
+          else {
+              filter.configSet(CAER_FILTER_DVS_BACKGROUND_ACTIVITY_ENABLE, false);
+            }
+          if(hotpixel_filter_enabled_ && !filter.configGet(CAER_FILTER_DVS_HOTPIXEL_LEARN)) {
+              filter.configSet(CAER_FILTER_DVS_HOTPIXEL_ENABLE, true);
+
+            }
+          else {
+              filter.configSet(CAER_FILTER_DVS_HOTPIXEL_ENABLE, true);
             }
           if (packetContainer == nullptr) {
               continue; // Skip if nothing there.
