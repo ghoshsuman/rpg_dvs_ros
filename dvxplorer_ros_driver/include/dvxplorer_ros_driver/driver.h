@@ -29,6 +29,8 @@
 #include <camera_info_manager/camera_info_manager.h>
 #include <sensor_msgs/CameraInfo.h>
 
+#include <libcaercpp/filters/dvs_noise.hpp>
+
 namespace dvxplorer_ros_driver {
 
 class DvxplorerRosDriver {

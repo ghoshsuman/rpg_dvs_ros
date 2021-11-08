@@ -282,10 +282,18 @@ void DvxplorerRosDriver::readout() {
 	boost::posix_time::ptime next_send_time = boost::posix_time::microsec_clock::local_time();
 
 	dvs_msgs::EventArrayPtr event_array_msg;
+	libcaer::filters::DVSNoise filter(dvxplorer_info_.dvsSizeX, dvxplorer_info_.dvsSizeY);
+	filter.configSet(CAER_FILTER_DVS_BACKGROUND_ACTIVITY_ENABLE, true);
+//			filter.configSet(CAER_FILTER_DVS_BACKGROUND_ACTIVITY_TIME, 1000000);
+	filter.configSet(CAER_FILTER_DVS_HOTPIXEL_LEARN, true);
+	filter.configSet(CAER_FILTER_DVS_HOTPIXEL_TIME, 1000000);
+	filter.configSet( CAER_FILTER_DVS_HOTPIXEL_COUNT, 1000);
+
 
 	while (running_) {
 		try {
 			caerEventPacketContainer packetContainer = caerDeviceDataGet(dvxplorer_handle_);
+
 			if (packetContainer == nullptr) {
 				continue; // Skip if nothing there.
 			}
@@ -309,11 +317,18 @@ void DvxplorerRosDriver::readout() {
 					}
 
 					caerPolarityEventPacket polarity = (caerPolarityEventPacket) packetHeader;
+					ROS_INFO("before filtering %d", polarity->packetHeader.eventValid);
+
+					filter.apply(polarity);
+
+					ROS_INFO("after filtering %d", polarity->packetHeader.eventValid);
 
 					const int numEvents = caerEventPacketHeaderGetEventNumber(packetHeader);
 					for (int j = 0; j < numEvents; j++) {
 						// Get full timestamp and addresses of first event.
 						caerPolarityEvent event = caerPolarityEventPacketGetEvent(polarity, j);
+						if (!caerPolarityEventIsValid(event))
+						  continue;
 
 						dvs_msgs::Event e;
 						e.x  = caerPolarityEventGetX(event);
