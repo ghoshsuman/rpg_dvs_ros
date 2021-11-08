@@ -98,6 +98,8 @@ private:
 
 	ros::Timer timestamp_reset_timer_;
 	void resetTimerCallback(const ros::TimerEvent &te);
+
+	bool bkg_filter_enabled_, hotpixel_filter_enabled_;
 };
 
 } // namespace dvxplorer_ros_driver
