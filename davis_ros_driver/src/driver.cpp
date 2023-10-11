@@ -29,7 +29,7 @@ DavisRosDriver::DavisRosDriver(ros::NodeHandle & nh, ros::NodeHandle nh_private)
     nh_(nh),
     parameter_update_required_(false),
     parameter_bias_update_required_(false),
-    imu_calibration_running_(false)
+    imu_calibration_running_(true)
 {
   // load parameters
   nh_private.param<std::string>("serial_number", device_id_, "");

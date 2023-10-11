@@ -1,0 +1,23 @@
+<launch>  
+  <!-- visualization -->
+  <node name="dvs_renderer_left" pkg="dvs_renderer" type="dvs_renderer">
+    <param name="display_method" value="red-blue"/>
+    <remap from="camera_info" to="/davis/left/camera_info" />
+    <remap from="events" to="/davis/left/events" />
+    <remap from="dvs_rendering" to="dvs_rendering_left" />
+  </node>
+  
+  <node name="dvs_renderer_right" pkg="dvs_renderer" type="dvs_renderer">
+    <param name="display_method" value="red-blue"/>
+    <remap from="camera_info" to="/davis/right/camera_info" />
+    <remap from="events" to="/davis/right/events" />
+    <remap from="dvs_rendering" to="dvs_rendering_right" />
+  </node>
+  
+  
+  <!-- display -->
+	<!-- Visualization -->
+	<node pkg="rqt_gui" type="rqt_gui" name="rqt_gui"
+    args="--perspective-file $(find dvs_renderer)/esvo_system.perspective" />
+  
+</launch>

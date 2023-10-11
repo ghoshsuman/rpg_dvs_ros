@@ -1,27 +1,28 @@
-<launch>  
+<launch>
+
   <!-- visualization -->
   <node name="dvs_renderer_left" pkg="dvs_renderer" type="dvs_renderer">
     <param name="display_method" value="red-blue"/>
-    <remap from="camera_info" to="/dvs/left/camera_info" />
-    <remap from="events" to="/dvs/left/events" />
+    <remap from="events" to="/davis/left/events" />
     <remap from="dvs_rendering" to="dvs_rendering_left" />
   </node>
   
   <node name="dvs_renderer_right" pkg="dvs_renderer" type="dvs_renderer">
     <param name="display_method" value="red-blue"/>
-    <remap from="camera_info" to="/dvs/right/camera_info" />
-    <remap from="events" to="/dvs/right/events" />
+    <remap from="events" to="/davis/right/events" />
     <remap from="dvs_rendering" to="dvs_rendering_right" />
   </node>
-  
-  
+
   <!-- display -->
   <node name="image_view_left" pkg="rqt_image_view" type="rqt_image_view">
-  	<remap from="image" to="dvs_rendering_left"/>
+    <remap from="image" to="dvs_rendering_left"/>
   </node>
-  
+
   <node name="image_view_right" pkg="rqt_image_view" type="rqt_image_view">
-  	<remap from="image" to="dvs_rendering_right"/>
+    <remap from="image" to="dvs_rendering_right"/>
   </node>
-  
+
+  <!-- configure -->
+  <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" />
+
 </launch>

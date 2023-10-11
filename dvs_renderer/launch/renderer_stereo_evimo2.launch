@@ -1,0 +1,27 @@
+<launch>  
+  <!-- visualization -->
+  <node name="dvs_renderer_left" pkg="dvs_renderer" type="dvs_renderer">
+    <param name="display_method" value="red-blue"/>
+    <remap from="events" to="/prophesee/left/cd_events_buffer" />
+    <remap from="dvs_rendering" to="dvs_rendering_left" />
+  </node>
+  
+  <node name="dvs_renderer_right" pkg="dvs_renderer" type="dvs_renderer">
+    <param name="display_method" value="red-blue"/>
+    <remap from="events" to="/prophesee/right/cd_events_buffer" />
+    <remap from="dvs_rendering" to="dvs_rendering_right" />
+  </node>
+  
+  <node name="dvs_renderer_center" pkg="dvs_renderer" type="dvs_renderer">
+    <param name="display_method" value="red-blue"/>
+    <remap from="events" to="/samsung/camera/events" />
+    <remap from="dvs_rendering" to="dvs_rendering_center" />
+  </node>
+  
+  
+  <!-- display -->
+	<!-- Visualization -->
+	<node pkg="rqt_gui" type="rqt_gui" name="rqt_gui"
+    args="--perspective-file $(find dvs_renderer)/esvo_system.perspective" />
+    
+</launch>
