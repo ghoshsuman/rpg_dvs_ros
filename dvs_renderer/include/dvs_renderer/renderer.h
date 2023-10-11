@@ -19,6 +19,7 @@
 
 #include <dvs_msgs/Event.h>
 #include <dvs_msgs/EventArray.h>
+#include <thread>
 
 namespace dvs_renderer
 {
@@ -34,6 +35,7 @@ private:
   void cameraInfoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg);
   void eventsCallback(const dvs_msgs::EventArray::ConstPtr& msg);
   void imageCallback(const sensor_msgs::Image::ConstPtr& msg);
+  void lsl_loop();
 
   void publishStats();
 
@@ -50,6 +52,9 @@ private:
   image_transport::Subscriber image_sub_;
   cv::Mat last_image_;
   bool used_last_image_;
+  std::thread lsl_thread;
+  ros::Time latest_ts;
+
 
   struct EventStats {
     ros::Publisher events_mean_[2]; /**< event stats output */

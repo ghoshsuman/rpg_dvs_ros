@@ -9,6 +9,16 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
 
 find_package(OpenCV REQUIRED)
 
+
+find_package(LSL 1.13.0 REQUIRED
+      HINTS ${LSL_INSTALL_ROOT}
+      "${CMAKE_CURRENT_LIST_DIR}/../../LSL/liblsl/build/"
+      "${CMAKE_CURRENT_LIST_DIR}/../../LSL/liblsl/build/install"
+      PATH_SUFFIXES share/LSL)
+get_filename_component(LSL_PATH ${LSL_CONFIG} DIRECTORY)
+message(STATUS "Found LSL lib in ${LSL_PATH}")
+
+
 # make the executable
 cs_add_executable(dvs_renderer
   src/image_tracking.cpp
@@ -27,6 +37,7 @@ cs_add_library(dvs_renderer_nodelet
 target_link_libraries(dvs_renderer
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
+  LSL::lsl
 )
 
 target_link_libraries(dvs_renderer_nodelet
